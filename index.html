@@ -1,11 +1,368 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Page</title>
+    <title>Mildes 23-års fest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body {
+            font-family: 'Bricolage Grotesque', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+            color: #ffffff;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .lang-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid #60a5fa;
+            border-radius: 50px;
+            padding: 10px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-family: inherit;
+            font-weight: bold;
+            transition: 0.3s;
+            backdrop-filter: blur(5px);
+        }
+
+        .container {
+            max-width: 650px;
+            padding: 60px 20px;
+            z-index: 2;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 50px;
+            color: #60a5fa;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+        }
+
+        h2 { font-size: 1.8rem; margin-bottom: 15px; color: #f8fafc; font-weight: 600; }
+        .section { margin-bottom: 60px; }
+
+        .address-wrapper {
+            position: relative;
+            display: inline-block;
+            padding: 0 60px; 
+        }
+
+        .textbox {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin: 0 auto;
+            max-width: 550px;
+        }
+
+        .map-link {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: bold;
+            border-bottom: 2px solid rgba(96, 165, 250, 0.3);
+        }
+
+        .cal-icon-btn {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            border: 2px solid #60a5fa;
+            border-radius: 10px;
+            fill: #60a5fa;
+            background: rgba(96, 165, 250, 0.05);
+        }
+
+        .rsvp-form-container {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            text-align: left;
+            max-width: 400px;
+            margin: 20px auto 0;
+        }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; color: #60a5fa; font-weight: bold; }
+        
+        input[type="text"] { 
+            width: 100%; 
+            padding: 10px; 
+            border-radius: 8px; 
+            border: 1px solid #334155; 
+            background: #1e293b; 
+            color: white; 
+            box-sizing: border-box; 
+            font-family: inherit;
+        }
+
+        .radio-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .radio-option { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            background: #3b82f6;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            font-family: inherit;
+        }
+
+        .submit-btn:hover { background: #2563eb; }
+
+        .change-link {
+            display: block;
+            margin-top: 15px;
+            color: #60a5fa;
+            cursor: pointer;
+            text-decoration: underline;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 500px) {
+            h1 { font-size: 2.8rem; }
+            .address-wrapper { padding: 0 0 70px 0; }
+            .cal-icon-btn { position: relative; margin: 20px auto 0; right: auto; top: auto; transform: none; }
+        }
+    </style>
 </head>
 <body>
-    testing
+
+    <button class="lang-switch" onclick="toggleLanguage()">
+        <span id="flag-icon">🇬🇧</span> <span id="lang-text">English</span>
+    </button>
+
+    <div class="container">
+        <h1 id="main-title">Mildes 23-års fest</h1>
+
+        <div class="section">
+            <h2 id="title-where">När och vart?</h2>
+            <div class="address-wrapper">
+                <div class="textbox" id="text-where">
+                    Lördag den 30:e maj kl. 17:00 <br>
+                    <a class="map-link" href="https://www.google.com/maps/search/?api=1&query=Elsa+Beskows+Gata+9,+Fruängen" target="_blank">
+                        Elsa Beskows Gata 9, Fruängen.
+                    </a>
+                </div>
+                <a id="cal-link" class="cal-icon-btn" href="https://calendar.google.com/calendar/render?action=TEMPLATE&text=Mildes+23-års+fest&dates=20260530T150000Z/20260531T010000Z&details=Välkommen+på+fest!&location=Elsa+Beskows+Gata+9,+Fruängen" target="_blank">
+                    <svg height="24" viewBox="0 -960 960 960" width="24"><path d="M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0-33-23.5-56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0-17 11.5-28.5T480-400Zm-160 0q-17 0-28.5-11.5T280-440q0-17 11.5-28.5T320-480q17 0 28.5 11.5T360-440q0-17-11.5-28.5T320-400Zm320 0q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0-17-11.5-28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0-17-11.5-28.5T480-240Zm-160 0q-17 0-28.5-11.5T280-280q0-17 11.5-28.5T320-320q17 0 28.5 11.5T360-280q0-17-11.5-28.5T320-240Zm320 0q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0-17-11.5-28.5T640-240Z"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 id="title-dress">Klädkod</h2>
+            <div class="textbox" id="text-dress">
+                Ha på dig dina konstigaste eller mest eccentriska kläder, något du annars aldrig får möjligheten att ha på dig. Spelar ingen roll om det är frack, cosplay, eller en riktigt konstig hatt, men ju konstigare desto bättre.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 id="title-activities">Aktiviteter</h2>
+            <div class="textbox" id="text-activities">
+                Förbered dig för najs häng, härliga konversationer samt pingis, darts, och mer!<br><br>
+                För er som gillar över fotboll så kommer Champions League finalen visas.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 id="title-alcohol">Alkohol</h2>
+            <div class="textbox" id="text-alcohol">
+                Ni känner mig så det bör nog inte komma som en chock att jag endast bidrar med alkfria alternativ. Men jag är ingen glädjedödare för det; ta gärna med egen alkohol!
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 id="title-prizes">Priser</h2>
+            <div class="textbox" id="text-prizes">
+                Det kommer att finnas priser för diverse kategorier, som exempelvis bäst klädd, så kom förberedd 👀.
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 id="title-osa">OSA</h2>
+            <div class="rsvp-form-container" id="rsvp-area">
+                <form id="my-form">
+                    <div class="input-group">
+                        <label for="name" id="label-name">Namn:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="input-group">
+                        <label id="label-rsvp">Kommer du?</label>
+                        <div class="radio-group">
+                            <label class="radio-option"><input type="radio" name="attendance" value="yes" required> <span id="opt-yes">Ja!!! 🥳</span></label>
+                            <label class="radio-option"><input type="radio" name="attendance" value="maybe"> <span id="opt-maybe">Kanske 🥴</span></label>
+                            <label class="radio-option"><input type="radio" name="attendance" value="no"> <span id="opt-no">Kan ej ☹️</span></label>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn" id="btn-submit">Skicka svar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- Confetti Logic ---
+        function rsvpPop() {
+            confetti({
+                particleCount: 200,
+                spread: 100,
+                origin: { y: 0.7 },
+                // Added a diverse multi-colored palette
+                colors: ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff', '#00ffff', '#ffa500', '#ffffff']
+            });
+        }
+
+        function startFallingConfetti() {
+            function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+            (function frame() {
+                if (Math.random() > 0.75) {
+                    confetti({
+                        particleCount: 1,
+                        startVelocity: 0,
+                        ticks: 200, // Disappears around halfway down
+                        origin: { x: Math.random(), y: -0.2 },
+                        colors: ['#60a5fa', '#ffffff'],
+                        gravity: randomInRange(0.5, 0.8),
+                        scalar: randomInRange(0.5, 0.8),
+                        drift: randomInRange(-0.5, 0.5)
+                    });
+                }
+                requestAnimationFrame(frame);
+            }());
+        }
+
+        window.onload = startFallingConfetti;
+
+        const originalFormHTML = document.getElementById("rsvp-area").innerHTML;
+
+        function resetForm() {
+            document.getElementById("rsvp-area").innerHTML = originalFormHTML;
+            attachFormListener(); 
+            if (currentLang === 'en') updateToEnglish();
+        }
+
+        // --- Translation Logic ---
+        let currentLang = 'sv';
+
+        function updateToEnglish() {
+            document.getElementById('main-title').innerText = "Milde's 23rd Birthday Party";
+            document.getElementById('title-where').innerText = "When and Where?";
+            document.getElementById('text-where').innerHTML = "Saturday, May 30th at 17:00 <br> <a class='map-link' href='https://www.google.com/maps/search/?api=1&query=Elsa+Beskows+Gata+9,+Fruängen' target='_blank'>Elsa Beskows Gata 9, Fruängen.</a>";
+            document.getElementById('title-dress').innerText = "Dress Code";
+            document.getElementById('text-dress').innerText = "Wear your weirdest or most eccentric clothes, that you otherwise don't get a chance to wear. It doesn't matter if it's a tailcoat, cosplay, or a really weird hat, but the weirder the better.";
+            document.getElementById('title-activities').innerText = "Activities";
+            document.getElementById('text-activities').innerHTML = "Get ready for a great time and lovely conversations, plus ping pong, darts, and more!<br><br>For those who like football, there will be a TV for the Champions League final.";
+            document.getElementById('title-alcohol').innerText = "Alcohol";
+            document.getElementById('text-alcohol').innerText = "You know me, so it shouldn't be a surprise that I'm only providing non-alcoholic options. But I'm no killjoy; feel free to bring your own alcohol.";
+            document.getElementById('title-prizes').innerText = "Prizes";
+            document.getElementById('text-prizes').innerText = "There will be prizes for various categories, e.g best dressed, so come prepared 👀.";
+            document.getElementById('title-osa').innerText = "RSVP";
+            
+            const nameLabel = document.getElementById('label-name');
+            if (nameLabel) {
+                document.getElementById('label-name').innerText = "Name:";
+                document.getElementById('label-rsvp').innerText = "Are you coming?";
+                document.getElementById('opt-yes').innerText = "Yes!!! 🥳";
+                document.getElementById('opt-maybe').innerText = "Maybe 🥴";
+                document.getElementById('opt-no').innerText = "Can't make it ☹️";
+                document.getElementById('btn-submit').innerText = "Submit";
+            }
+        }
+
+        function toggleLanguage() {
+            const btn = document.getElementById('lang-text');
+            const flag = document.getElementById('flag-icon');
+            
+            if (currentLang === 'sv') {
+                currentLang = 'en';
+                updateToEnglish();
+                btn.innerText = "Svenska";
+                flag.innerText = "🇸🇪";
+            } else {
+                location.reload(); 
+            }
+        }
+
+        function attachFormListener() {
+            const form = document.getElementById("my-form");
+            form.addEventListener("submit", async function(event) {
+                event.preventDefault();
+                const status = document.getElementById("btn-submit");
+                const data = new FormData(event.target);
+                const attendance = data.get('attendance');
+                
+                status.disabled = true;
+                status.innerText = currentLang === 'sv' ? "Skickar..." : "Sending...";
+
+                fetch("https://formspree.io/f/xykovnwg", {
+                    method: 'POST',
+                    body: data,
+                    headers: { 'Accept': 'application/json' }
+                }).then(response => {
+                    if (response.ok) {
+                        if (attendance === 'yes' || attendance === 'maybe') { rsvpPop(); }
+                        
+                        let successTitle = currentLang === 'sv' ? "Tack för ditt svar! 🎉" : "Thanks for your RSVP! 🎉";
+                        
+                        let finalMsg;
+                        if (attendance === 'yes') {
+                            finalMsg = currentLang === 'sv' ? "Vi ses på festen!" : "See you at the party!";
+                        } else if (attendance === 'maybe') {
+                            finalMsg = currentLang === 'sv' ? "Hoppas att du kan komma!" : "Hope you can make it!";
+                        } else {
+                            finalMsg = currentLang === 'sv' ? "Tråkigt att du inte kan komma, om planer ändras kan du alltid komma tillbaka och ändra ditt svar." : "Sad you can't make it, but if your plans change you can always come back and change your answer.";
+                        }
+                        
+                        let changeText = currentLang === 'sv' ? "Ändra svar" : "Change answer";
+
+                        document.getElementById("rsvp-area").innerHTML = `
+                            <div style="text-align:center; padding: 20px;">
+                                <h3>${successTitle}</h3>
+                                <p>${finalMsg}</p>
+                                <span class="change-link" onclick="resetForm()">${changeText}</span>
+                            </div>`;
+                    } else {
+                        alert("Error.");
+                        status.disabled = false;
+                        status.innerText = currentLang === 'sv' ? "Skicka svar" : "Send RSVP";
+                    }
+                });
+            });
+        }
+
+        attachFormListener();
+    </script>
 </body>
 </html>
