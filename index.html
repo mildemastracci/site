@@ -315,49 +315,55 @@
             }
         }
 
+        // --- Updated RSVP Submission Logic for Google Sheets ---
         function attachFormListener() {
             const form = document.getElementById("my-form");
+            // PASTE YOUR GOOGLE WEB APP URL HERE
+            const scriptURL = 'https://script.google.com/macros/s/AKfycby174bnSNyiR5eFlGAGyyV_dZvvgPQY_rd5Mi4fXc-1dWxG29YqsIctuIHF3cuy58HSCw/exec';
+
             form.addEventListener("submit", async function(event) {
                 event.preventDefault();
                 const status = document.getElementById("btn-submit");
-                const data = new FormData(event.target);
-                const attendance = data.get('attendance');
+                const attendance = form.querySelector('input[name="attendance"]:checked').value;
                 
                 status.disabled = true;
                 status.innerText = currentLang === 'sv' ? "Skickar..." : "Sending...";
 
-                fetch("https://formspree.io/f/xykovnwg", {
-                    method: 'POST',
-                    body: data,
-                    headers: { 'Accept': 'application/json' }
-                }).then(response => {
-                    if (response.ok) {
-                        if (attendance === 'yes' || attendance === 'maybe') { rsvpPop(); }
-                        
-                        let successTitle = currentLang === 'sv' ? "Tack för ditt svar! 🎉" : "Thanks for your RSVP! 🎉";
-                        
-                        let finalMsg;
-                        if (attendance === 'yes') {
-                            finalMsg = currentLang === 'sv' ? "Vi ses på festen!" : "See you at the party!";
-                        } else if (attendance === 'maybe') {
-                            finalMsg = currentLang === 'sv' ? "Hoppas att du kan komma!" : "Hope you can make it!";
-                        } else {
-                            finalMsg = currentLang === 'sv' ? "Tråkigt att du inte kan komma, om planer ändras kan du alltid komma tillbaka och ändra ditt svar." : "Sad you can't make it, but if your plans change you can always come back and change your answer.";
-                        }
-                        
-                        let changeText = currentLang === 'sv' ? "Ändra svar" : "Change answer";
-
-                        document.getElementById("rsvp-area").innerHTML = `
-                            <div style="text-align:center; padding: 20px;">
-                                <h3>${successTitle}</h3>
-                                <p>${finalMsg}</p>
-                                <span class="change-link" onclick="resetForm()">${changeText}</span>
-                            </div>`;
+                // We use FormData to send the data to the Google Script
+                fetch(scriptURL, { 
+                    method: 'POST', 
+                    body: new FormData(form)
+                })
+                .then(response => {
+                    // Google Apps Script usually returns a 200 even on some errors, 
+                    // so we just assume success if we reach this point
+                    if (attendance === 'yes' || attendance === 'maybe') { rsvpPop(); }
+                    
+                    let successTitle = currentLang === 'sv' ? "Tack för ditt svar! 🎉" : "Thanks for your RSVP! 🎉";
+                    let finalMsg;
+                    
+                    if (attendance === 'yes') {
+                        finalMsg = currentLang === 'sv' ? "Vi ses på festen!" : "See you at the party!";
+                    } else if (attendance === 'maybe') {
+                        finalMsg = currentLang === 'sv' ? "Hoppas att du kan komma!" : "Hope you can make it!";
                     } else {
-                        alert("Error.");
-                        status.disabled = false;
-                        status.innerText = currentLang === 'sv' ? "Skicka svar" : "Send RSVP";
+                        finalMsg = currentLang === 'sv' ? "Tråkigt att du inte kan komma!" : "Sad you can't make it!";
                     }
+                    
+                    let changeText = currentLang === 'sv' ? "Ändra svar" : "Change answer";
+
+                    document.getElementById("rsvp-area").innerHTML = `
+                        <div style="text-align:center; padding: 20px;">
+                            <h3>${successTitle}</h3>
+                            <p>${finalMsg}</p>
+                            <span class="change-link" onclick="resetForm()">${changeText}</span>
+                        </div>`;
+                })
+                .catch(error => {
+                    console.error('Error!', error.message);
+                    alert("Något gick fel. Försök igen!");
+                    status.disabled = false;
+                    status.innerText = currentLang === 'sv' ? "Skicka svar" : "Send RSVP";
                 });
             });
         }
